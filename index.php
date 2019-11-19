@@ -1,57 +1,49 @@
 <?php
-class C 
-{
-	protected $X;
-	function vrot($a,$b){
-		if ($a == 0) {
-			return false;
-		}
-		$X = (-1 * $b) / $a;
-		return $this -> X = $X;
-	}
+namespace vlad;
 
-}
-class B extends C
-{
-	protected $x = [];
-	function vlad($a1,$b1,$c1){
-		if ($a1 == 0) {
-			$x1 = $this -> vrot($b1,$c1);
-			return $this -> x = array_push($x , $x1);
+ini_set('display errors',1);
+error_REPORTING(-1);
+
+
+
+include_once('core/EquationInterface.php');
+include_once('core/LogAbstract.php');
+include_once('core/LogInterface.php');
+include_once('vlad/Lineunoe.php');
+include_once('vlad/Kvadrat.php');
+include_once('vlad/Log.php');
+
+
+echo "Please enter 3 parameters divided by space. \n";
+$params = explode(" ", fgets(STDIN));
+
+try {
+	if (count($params) != 3) {
+		throw new Burmantov("Wrong parameter count. Please enter exactly 3 parameters.");
+	}
+	$a = (float)$params[0];
+	$b = (float)$params[1];
+	$c = (float)$params[2];
+	if ($params[0] == 0) {
+		Log::log("Linear equation: ".$b."x + ".$c." = 0");
+		$Lineunoe = new Lineunoe();
+		Log::log("Answer: ".$Lineunoe->yr($a, $b));	
+	}
+	else {
+		Log::log("Square equation: ".$a."x^2 + ".$b."x + ".$c." = 0");
+		$Kvadrat = new Kvadrat();
+		if (is_array($temp = $Kvadrat->solve($a, $b, $c))) {
+			Log::log("Answer: ". implode(" , ", $temp));
 		}
-		$dis = $b1 * $b1 - 4 * $a1 * $c1;
-		if ($dis == 0 ) {
-			$x1 = (-1 * $b1) / 2 * $a1;
-			return $this -> x = array_push($x , $x1);
-		}
-		if ($dis < 0 ){
-			return false;
+		else {
+			Log::log("Answer: ".$temp);
 		}
 		
-		$x1 = (-1 * $b1 + sqrt($dis)) / 2 * $a1;
-		$x2 = (-1 * $b1 - sqrt($dis)) / 2 * $a1;
-		 $this -> x = array_push($x , $x1);
-		 $this -> x = array_push($x , $x2);
-	}
+	}	
 }
-Class A extends B
-{
-	public $q;
-	public $f;
-	function __construct($roor,$toot,$lool)
-	{
-		parent::__construct($roor);
-		$this->f = $toot;
-		$this->t = $lool;
-	}
+catch (Burmantov $e){
+	Log::log($e->GetMessage());
 }
-$ob = new C();
-$ob1 = new C();
-$ob2 = new C();
-$ob3 = new B($ob2);
-$ob4 = new A ($ob3,$ob1,$ob);
-var_dump($ob4);
-$ob5 = new B ();
-$ob5->vlad(1,2,8);
-?>
 
+Log::write()."\n";
+?>
